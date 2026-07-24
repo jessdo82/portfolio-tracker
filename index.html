@@ -10,136 +10,98 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     :root {
-      --bg: #000; --card: #1c1c1e; --card2: #2c2c2e;
-      --green: #30d158; --red: #ff453a; --blue: #0a84ff;
-      --orange: #ff9f0a; --text: #fff; --text2: #8e8e93;
-      --border: #38383a; --safe: env(safe-area-inset-bottom, 0px);
+      --bg:#000; --card:#1c1c1e; --card2:#2c2c2e;
+      --green:#30d158; --red:#ff453a; --blue:#0a84ff;
+      --orange:#ff9f0a; --text:#fff; --text2:#8e8e93;
+      --border:#38383a; --safe:env(safe-area-inset-bottom,0px);
     }
-    body {
-      background: var(--bg); color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
-      min-height: 100vh; padding-bottom: calc(90px + var(--safe));
-    }
+    body { background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif; min-height:100vh; padding-bottom:calc(90px + var(--safe)); }
 
     /* Header */
-    .hdr { padding: 56px 20px 16px; background: #111; }
-    .hdr-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    .hdr-title { font-size: 22px; font-weight: 700; }
-    .ref-btn {
-      background: var(--card2); border: none; color: var(--blue);
-      width: 36px; height: 36px; border-radius: 50%; font-size: 20px;
-      cursor: pointer; display: flex; align-items: center; justify-content: center;
-    }
-    .ref-btn.spin { animation: spin 1s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .total-lbl { font-size: 13px; color: var(--text2); margin-bottom: 4px; }
-    .total-amt { font-size: 38px; font-weight: 700; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
-    .total-chg { font-size: 15px; margin-top: 6px; min-height: 22px; }
-    .upd-time { font-size: 12px; color: var(--text2); margin-top: 6px; }
+    .hdr { padding:56px 20px 16px; background:#111; }
+    .hdr-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+    .hdr-title { font-size:22px; font-weight:700; }
+    .hdr-btns { display:flex; gap:8px; }
+    .ico-btn { background:var(--card2); border:none; color:var(--blue); width:36px; height:36px; border-radius:50%; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+    .ico-btn.spin { animation:spin 1s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .total-lbl { font-size:13px; color:var(--text2); margin-bottom:4px; }
+    .total-amt { font-size:38px; font-weight:700; letter-spacing:-1px; font-variant-numeric:tabular-nums; }
+    .total-chg { font-size:15px; margin-top:6px; min-height:22px; }
+    .upd { font-size:12px; color:var(--text2); margin-top:6px; }
 
     /* Sub totals */
-    .subs { display: flex; gap: 10px; padding: 12px 20px; overflow-x: auto; scrollbar-width: none; }
-    .subs::-webkit-scrollbar { display: none; }
-    .sub { background: var(--card); border-radius: 12px; padding: 11px 14px; min-width: 130px; flex-shrink: 0; }
-    .sub-lbl { font-size: 11px; color: var(--text2); margin-bottom: 4px; }
-    .sub-val { font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; }
+    .subs { display:flex; gap:10px; padding:12px 20px; overflow-x:auto; scrollbar-width:none; }
+    .subs::-webkit-scrollbar { display:none; }
+    .sub { background:var(--card); border-radius:12px; padding:11px 14px; min-width:130px; flex-shrink:0; }
+    .sub-lbl { font-size:11px; color:var(--text2); margin-bottom:4px; }
+    .sub-val { font-size:17px; font-weight:600; font-variant-numeric:tabular-nums; }
 
     /* Tabs */
-    .tabs { display: flex; gap: 8px; padding: 4px 20px 8px; overflow-x: auto; scrollbar-width: none; }
-    .tabs::-webkit-scrollbar { display: none; }
-    .tab {
-      background: var(--card); border: none; color: var(--text2);
-      padding: 7px 16px; border-radius: 20px; font-size: 14px;
-      cursor: pointer; white-space: nowrap; flex-shrink: 0; font-weight: 500;
-    }
-    .tab.on { background: var(--blue); color: #fff; }
+    .tabs { display:flex; gap:8px; padding:4px 20px 8px; overflow-x:auto; scrollbar-width:none; }
+    .tabs::-webkit-scrollbar { display:none; }
+    .tab { background:var(--card); border:none; color:var(--text2); padding:7px 16px; border-radius:20px; font-size:14px; cursor:pointer; white-space:nowrap; flex-shrink:0; font-weight:500; }
+    .tab.on { background:var(--blue); color:#fff; }
 
-    /* Holdings */
-    .list { padding: 0 16px; }
-    .sec-lbl { font-size: 12px; color: var(--text2); padding: 16px 4px 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; }
+    /* List */
+    .list { padding:0 16px; }
+    .sec-lbl { font-size:12px; color:var(--text2); padding:16px 4px 8px; font-weight:600; text-transform:uppercase; letter-spacing:.8px; }
 
     /* Card */
-    .card { background: var(--card); border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; cursor: pointer; }
-    .card:active { opacity: 0.65; }
-    .card-hdr { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-    .card-sym { font-size: 17px; font-weight: 700; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-    .badge { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; background: var(--orange); color: #000; }
-    .card-name { font-size: 13px; color: var(--text2); margin-top: 2px; }
-    .card-broker { font-size: 12px; color: var(--text2); background: var(--card2); padding: 3px 9px; border-radius: 6px; flex-shrink: 0; }
-    .price-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
-    .price { font-size: 22px; font-weight: 600; font-variant-numeric: tabular-nums; }
-    .day-chg { font-size: 14px; font-variant-numeric: tabular-nums; }
-    .metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; border-top: 1px solid var(--border); padding-top: 10px; }
-    .m-lbl { font-size: 11px; color: var(--text2); margin-bottom: 3px; }
-    .m-val { font-size: 13px; font-weight: 500; font-variant-numeric: tabular-nums; }
-    .m-val.sm { font-size: 12px; }
-    .margin-box {
-      background: rgba(255,159,10,.08); border: 1px solid rgba(255,159,10,.25);
-      border-radius: 8px; padding: 8px 10px; margin-top: 10px; font-size: 12px;
-    }
-    .mrow { display: flex; justify-content: space-between; padding: 2px 0; font-variant-numeric: tabular-nums; }
-    .mrow.tot { border-top: 1px solid rgba(255,159,10,.2); margin-top: 4px; padding-top: 6px; font-weight: 600; font-size: 13px; }
-    .green { color: var(--green); }
-    .red { color: var(--red); }
+    .card { background:var(--card); border-radius:14px; padding:14px 16px; margin-bottom:10px; cursor:pointer; }
+    .card:active { opacity:.65; }
+    .card-hdr { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
+    .sym { font-size:17px; font-weight:700; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+    .badge { font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px; background:var(--orange); color:#000; }
+    .sname { font-size:13px; color:var(--text2); margin-top:2px; }
+    .bkr { font-size:12px; color:var(--text2); background:var(--card2); padding:3px 9px; border-radius:6px; flex-shrink:0; }
+    .price-row { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px; }
+    .price { font-size:22px; font-weight:600; font-variant-numeric:tabular-nums; }
+    .dchg { font-size:14px; font-variant-numeric:tabular-nums; }
+    .metrics { display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; border-top:1px solid var(--border); padding-top:10px; }
+    .mlbl { font-size:11px; color:var(--text2); margin-bottom:3px; }
+    .mval { font-size:13px; font-weight:500; font-variant-numeric:tabular-nums; }
+    .mval.sm { font-size:12px; }
+    .mbox { background:rgba(255,159,10,.08); border:1px solid rgba(255,159,10,.25); border-radius:8px; padding:8px 10px; margin-top:10px; font-size:12px; }
+    .mrow { display:flex; justify-content:space-between; padding:2px 0; font-variant-numeric:tabular-nums; }
+    .mrow.tot { border-top:1px solid rgba(255,159,10,.2); margin-top:4px; padding-top:6px; font-weight:600; font-size:13px; }
+    .green { color:var(--green); }
+    .red { color:var(--red); }
 
     /* Empty */
-    .empty { text-align: center; padding: 80px 20px; color: var(--text2); }
-    .empty-ico { font-size: 52px; margin-bottom: 16px; }
-    .empty-txt { font-size: 16px; line-height: 1.5; }
+    .empty { text-align:center; padding:80px 20px; color:var(--text2); }
+    .empty-ico { font-size:52px; margin-bottom:16px; }
 
     /* FAB */
-    .fab {
-      position: fixed; bottom: calc(28px + var(--safe)); right: 24px;
-      width: 56px; height: 56px; border-radius: 50%; background: var(--blue);
-      color: #fff; font-size: 30px; border: none; cursor: pointer;
-      box-shadow: 0 4px 20px rgba(10,132,255,.45);
-      display: flex; align-items: center; justify-content: center; z-index: 100;
-    }
+    .fab { position:fixed; bottom:calc(28px + var(--safe)); right:24px; width:56px; height:56px; border-radius:50%; background:var(--blue); color:#fff; font-size:30px; border:none; cursor:pointer; box-shadow:0 4px 20px rgba(10,132,255,.45); display:flex; align-items:center; justify-content:center; z-index:100; }
 
-    /* Modal */
-    .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.65); z-index: 200; align-items: flex-end; }
-    .overlay.open { display: flex; }
-    .modal {
-      background: #1c1c1e; border-radius: 20px 20px 0 0;
-      padding: 8px 20px calc(28px + var(--safe));
-      width: 100%; max-height: 92vh; overflow-y: auto;
-    }
-    .handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 12px auto 20px; }
-    .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; }
-    .fg { margin-bottom: 16px; }
-    .flbl { font-size: 13px; color: var(--text2); margin-bottom: 6px; display: block; }
-    .finp {
-      width: 100%; background: var(--card2); border: none; border-radius: 10px;
-      padding: 12px 14px; color: var(--text); font-size: 16px; outline: none;
-    }
-    .finp:focus { outline: 2px solid var(--blue); }
-    .mkt-tog { display: flex; gap: 8px; }
-    .mkt-btn {
-      flex: 1; padding: 11px; border: 2px solid var(--border); border-radius: 10px;
-      background: transparent; color: var(--text2); font-size: 15px; cursor: pointer; font-weight: 500;
-    }
-    .mkt-btn.on { border-color: var(--blue); color: var(--blue); background: rgba(10,132,255,.1); }
-    .tog-row {
-      display: flex; align-items: center; justify-content: space-between;
-      background: var(--card2); padding: 12px 14px; border-radius: 10px; cursor: pointer;
-    }
-    .sw {
-      width: 51px; height: 31px; background: var(--border);
-      border-radius: 16px; position: relative; transition: background .2s; flex-shrink: 0;
-    }
-    .sw.on { background: var(--green); }
-    .sw::after {
-      content: ''; position: absolute; width: 27px; height: 27px; background: #fff;
-      border-radius: 50%; top: 2px; left: 2px; transition: left .2s; box-shadow: 0 1px 4px rgba(0,0,0,.3);
-    }
-    .sw.on::after { left: 22px; }
-    .hint { font-size: 12px; color: var(--text2); margin-top: 5px; }
-    .hidden { display: none !important; }
-    .actions { display: flex; gap: 10px; margin-top: 24px; }
-    .btn { flex: 1; padding: 14px; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; }
-    .btn-pri { background: var(--blue); color: #fff; }
-    .btn-sec { background: var(--card2); color: var(--text); }
-    .btn-del { background: var(--red); color: #fff; }
+    /* Overlay / Modal */
+    .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.65); z-index:200; align-items:flex-end; }
+    .overlay.open { display:flex; }
+    .modal { background:#1c1c1e; border-radius:20px 20px 0 0; padding:8px 20px calc(28px + var(--safe)); width:100%; max-height:92vh; overflow-y:auto; }
+    .handle { width:40px; height:4px; background:var(--border); border-radius:2px; margin:12px auto 20px; }
+    .mtit { font-size:18px; font-weight:700; margin-bottom:20px; }
+    .fg { margin-bottom:16px; }
+    .flbl { font-size:13px; color:var(--text2); margin-bottom:6px; display:block; }
+    .finp { width:100%; background:var(--card2); border:none; border-radius:10px; padding:12px 14px; color:var(--text); font-size:16px; outline:none; }
+    .finp:focus { outline:2px solid var(--blue); }
+    textarea.finp { resize:vertical; min-height:120px; font-size:13px; font-family:monospace; }
+    .mkt-tog { display:flex; gap:8px; }
+    .mkt-btn { flex:1; padding:11px; border:2px solid var(--border); border-radius:10px; background:transparent; color:var(--text2); font-size:15px; cursor:pointer; font-weight:500; }
+    .mkt-btn.on { border-color:var(--blue); color:var(--blue); background:rgba(10,132,255,.1); }
+    .tog-row { display:flex; align-items:center; justify-content:space-between; background:var(--card2); padding:12px 14px; border-radius:10px; cursor:pointer; }
+    .sw { width:51px; height:31px; background:var(--border); border-radius:16px; position:relative; transition:background .2s; flex-shrink:0; }
+    .sw.on { background:var(--green); }
+    .sw::after { content:''; position:absolute; width:27px; height:27px; background:#fff; border-radius:50%; top:2px; left:2px; transition:left .2s; box-shadow:0 1px 4px rgba(0,0,0,.3); }
+    .sw.on::after { left:22px; }
+    .hint { font-size:12px; color:var(--text2); margin-top:5px; }
+    .hidden { display:none !important; }
+    .acts { display:flex; gap:10px; margin-top:24px; }
+    .btn { flex:1; padding:14px; border:none; border-radius:12px; font-size:16px; font-weight:600; cursor:pointer; }
+    .btn-p { background:var(--blue); color:#fff; }
+    .btn-s { background:var(--card2); color:var(--text); }
+    .btn-d { background:var(--red); color:#fff; }
+    .divider { border:none; border-top:1px solid var(--border); margin:20px 0; }
   </style>
 </head>
 <body>
@@ -147,12 +109,15 @@
 <div class="hdr">
   <div class="hdr-top">
     <div class="hdr-title">投資組合</div>
-    <button class="ref-btn" id="refBtn" onclick="fetchPrices()">↻</button>
+    <div class="hdr-btns">
+      <button class="ico-btn" id="refBtn" onclick="fetchPrices()" title="更新">↻</button>
+      <button class="ico-btn" onclick="openSettings()" title="設定">⚙</button>
+    </div>
   </div>
   <div class="total-lbl">總淨值（台幣）</div>
   <div class="total-amt" id="totalAmt">—</div>
   <div class="total-chg" id="totalChg"></div>
-  <div class="upd-time" id="updTime"></div>
+  <div class="upd" id="upd"></div>
 </div>
 
 <div class="subs" id="subs"></div>
@@ -161,11 +126,11 @@
 
 <button class="fab" onclick="openModal()">+</button>
 
-<div class="overlay" id="overlay" onclick="closeIfBg(event)">
+<!-- Holdings modal -->
+<div class="overlay" id="hOv" onclick="closeIfBg(event,'hOv')">
   <div class="modal">
     <div class="handle"></div>
-    <div class="modal-title" id="modalTit">新增持股</div>
-
+    <div class="mtit" id="hTit">新增持股</div>
     <div class="fg">
       <label class="flbl">市場</label>
       <div class="mkt-tog">
@@ -173,295 +138,215 @@
         <button class="mkt-btn" id="btnUS" onclick="setMkt('US')">美股 USD</button>
       </div>
     </div>
+    <div class="fg"><label class="flbl">券商</label><input class="finp" id="fBk" type="text" placeholder="富邦 / 群益 / 國泰 / 永豐金"></div>
+    <div class="fg"><label class="flbl">股票代碼</label><input class="finp" id="fTk" type="text" placeholder="台股：00662　美股：NVDA" autocapitalize="characters" autocorrect="off"></div>
+    <div class="fg"><label class="flbl">股票名稱</label><input class="finp" id="fNm" type="text" placeholder="例：富邦NASDAQ"></div>
+    <div class="fg"><label class="flbl">持股數量</label><input class="finp" id="fSh" type="number" inputmode="decimal" placeholder="0"></div>
+    <div class="fg"><label class="flbl">平均成本（每股）</label><input class="finp" id="fCo" type="number" inputmode="decimal" placeholder="0.00"></div>
     <div class="fg">
-      <label class="flbl">券商</label>
-      <input class="finp" id="fBroker" type="text" placeholder="富邦 / 群益 / 永豐金">
-    </div>
-    <div class="fg">
-      <label class="flbl">股票代碼</label>
-      <input class="finp" id="fTicker" type="text" placeholder="台股：00662　美股：NVDA" autocapitalize="characters" autocorrect="off">
-    </div>
-    <div class="fg">
-      <label class="flbl">股票名稱（顯示用）</label>
-      <input class="finp" id="fName" type="text" placeholder="例：富邦NASDAQ">
-    </div>
-    <div class="fg">
-      <label class="flbl">持股數量</label>
-      <input class="finp" id="fShares" type="number" inputmode="decimal" placeholder="0">
-    </div>
-    <div class="fg">
-      <label class="flbl">平均成本（每股）</label>
-      <input class="finp" id="fCost" type="number" inputmode="decimal" placeholder="0.00">
-    </div>
-    <div class="fg">
-      <div class="tog-row" onclick="togMargin()">
+      <div class="tog-row" onclick="togM()">
         <span style="font-size:16px">融資部位</span>
         <div class="sw" id="mSw"></div>
       </div>
     </div>
-    <div class="fg hidden" id="loanGrp">
+    <div class="fg hidden" id="lGrp">
       <label class="flbl">融資借款金額</label>
-      <input class="finp" id="fLoan" type="number" inputmode="numeric" placeholder="0">
-      <div class="hint">券商借你的金額，用來計算自有淨值（市值 − 融資借款）</div>
+      <input class="finp" id="fLo" type="number" inputmode="numeric" placeholder="0">
+      <div class="hint">券商借你的金額（市值 − 融資借款 = 自有淨值）</div>
     </div>
-    <div class="actions">
-      <button class="btn btn-sec" onclick="closeModal()">取消</button>
-      <button class="btn btn-del hidden" id="delBtn" onclick="delHolding()">刪除</button>
-      <button class="btn btn-pri" onclick="saveHolding()">儲存</button>
+    <div class="acts">
+      <button class="btn btn-s" onclick="closeModal()">取消</button>
+      <button class="btn btn-d hidden" id="delBtn" onclick="delH()">刪除</button>
+      <button class="btn btn-p" onclick="saveH()">儲存</button>
     </div>
+  </div>
+</div>
+
+<!-- Settings modal -->
+<div class="overlay" id="sOv" onclick="closeIfBg(event,'sOv')">
+  <div class="modal">
+    <div class="handle"></div>
+    <div class="mtit">設定</div>
+
+    <div class="fg">
+      <label class="flbl">匯入持股資料（貼上 JSON）</label>
+      <textarea class="finp" id="impJson" placeholder='貼上 JSON 陣列後點匯入...'></textarea>
+    </div>
+    <button class="btn btn-p" style="width:100%;margin-bottom:20px" onclick="doImport()">匯入</button>
+
+    <hr class="divider">
+
+    <div class="fg">
+      <label class="flbl">匯出目前資料</label>
+      <textarea class="finp" id="expJson" readonly onclick="this.select()"></textarea>
+    </div>
+    <button class="btn btn-s" style="width:100%;margin-bottom:20px" onclick="doExport()">產生匯出 JSON</button>
+
+    <hr class="divider">
+    <button class="btn btn-s" style="width:100%" onclick="closeSettings()">關閉</button>
   </div>
 </div>
 
 <script>
 const SK = 'portfolio_v2';
-const YF  = 'https://query2.finance.yahoo.com/v7/finance/quote';
-const PX  = 'https://corsproxy.io/?url=';
+const YF = 'https://query2.finance.yahoo.com/v7/finance/quote';
+const PX = 'https://corsproxy.io/?url=';
 
-let H = [], P = {}, rate = null, editId = null, fMkt = 'TW', fMargin = false, tab = 'all';
+let H=[], P={}, rate=null, editId=null, fMkt='TW', fMargin=false, curTab='all';
 
-function load() { try { H = JSON.parse(localStorage.getItem(SK)) || []; } catch(e) { H = []; } }
-function persist() { localStorage.setItem(SK, JSON.stringify(H)); }
+function load() { try { H=JSON.parse(localStorage.getItem(SK))||[]; } catch(e){ H=[]; } }
+function persist() { localStorage.setItem(SK,JSON.stringify(H)); }
+function yt(h) { return h.market==='TW' ? h.ticker+'.TW' : h.ticker; }
 
-function yt(h) { return h.market === 'TW' ? h.ticker + '.TW' : h.ticker; }
-
-// Fetch prices — try direct first, fall back to CORS proxy
 async function fetchPrices() {
-  if (!H.length) return;
-  const btn = document.getElementById('refBtn');
+  if(!H.length) return;
+  const btn=document.getElementById('refBtn');
   btn.classList.add('spin');
-  document.getElementById('updTime').textContent = '更新中…';
-
-  const syms = [...new Set(H.map(yt)), 'USDTWD=X'].join(',');
-  const endpoint = `${YF}?symbols=${encodeURIComponent(syms)}&fields=regularMarketPrice,regularMarketPreviousClose,regularMarketChange,regularMarketChangePercent,currency,marketState`;
-
-  let quotes = null;
+  document.getElementById('upd').textContent='更新中…';
+  const syms=[...new Set(H.map(yt)),'USDTWD=X'].join(',');
+  const ep=`${YF}?symbols=${encodeURIComponent(syms)}&fields=regularMarketPrice,regularMarketPreviousClose,regularMarketChange,regularMarketChangePercent,currency,marketState`;
+  let quotes=null;
   try {
-    const r = await fetch(endpoint);
-    if (!r.ok) throw new Error('direct failed');
-    const j = await r.json();
-    quotes = j.quoteResponse?.result;
+    const r=await fetch(ep);
+    if(!r.ok) throw 0;
+    quotes=(await r.json()).quoteResponse?.result;
   } catch(_) {
     try {
-      const r2 = await fetch(PX + encodeURIComponent(endpoint));
-      if (!r2.ok) throw new Error('proxy failed');
-      const j2 = await r2.json();
-      quotes = j2.quoteResponse?.result;
-    } catch(e2) {
-      document.getElementById('updTime').textContent = '載入失敗，請稍後重試';
-      btn.classList.remove('spin');
-      return;
-    }
+      const r2=await fetch(PX+encodeURIComponent(ep));
+      quotes=(await r2.json()).quoteResponse?.result;
+    } catch(e2){ document.getElementById('upd').textContent='載入失敗，請稍後再試'; btn.classList.remove('spin'); return; }
   }
-
-  P = {};
-  (quotes || []).forEach(q => {
-    P[q.symbol] = {
-      price: q.regularMarketPrice,
-      prev: q.regularMarketPreviousClose,
-      chg: q.regularMarketChange,
-      chgPct: q.regularMarketChangePercent,
-      currency: q.currency,
-      state: q.marketState,
-    };
-  });
-  rate = P['USDTWD=X']?.price || null;
-
-  document.getElementById('updTime').textContent = '更新：' + new Date().toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' });
+  P={};
+  (quotes||[]).forEach(q=>{ P[q.symbol]={price:q.regularMarketPrice,prev:q.regularMarketPreviousClose,chg:q.regularMarketChange,chgPct:q.regularMarketChangePercent,state:q.marketState}; });
+  rate=P['USDTWD=X']?.price||null;
+  document.getElementById('upd').textContent='更新：'+new Date().toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'});
   btn.classList.remove('spin');
   render();
 }
 
-// Calc one holding
 function calc(h) {
-  const pd = P[yt(h)];
-  if (!pd || pd.price == null) return { ...h, pd: null };
-  const curr = pd.price;
-  const mv = h.shares * curr;
-  const tc = h.shares * h.avgCost;
-  const sf = h.isMargin ? tc - h.marginLoan : tc;
-  const nv = h.isMargin ? mv - h.marginLoan : mv;
-  const pnl = mv - tc;
-  const pnlPct = sf > 0 ? pnl / sf * 100 : 0;
-  const dayAmt = (curr - pd.prev) * h.shares;
-  return { ...h, pd, curr, mv, nv, tc, sf, pnl, pnlPct, dayAmt };
+  const pd=P[yt(h)];
+  if(!pd||pd.price==null) return {...h,pd:null};
+  const curr=pd.price, mv=h.shares*curr, tc=h.shares*h.avgCost;
+  const sf=h.isMargin?tc-h.marginLoan:tc;
+  const nv=h.isMargin?mv-h.marginLoan:mv;
+  const pnl=mv-tc, pnlPct=sf>0?pnl/sf*100:0;
+  const dayAmt=(curr-pd.prev)*h.shares;
+  return {...h,pd,curr,mv,nv,tc,sf,pnl,pnlPct,dayAmt};
 }
 
-// Format
-function f(n, d = 0) {
-  if (n == null || isNaN(n)) return '—';
-  return n.toLocaleString('zh-TW', { minimumFractionDigits: d, maximumFractionDigits: d });
+function f(n,d=0){ if(n==null||isNaN(n))return'—'; return n.toLocaleString('zh-TW',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+function fp(n){ if(n==null)return''; return(n>=0?'+':'')+n.toFixed(2)+'%'; }
+function cc(n){ return n==null?'':n>=0?'green':'red'; }
+
+function render(){ renderTabs(); renderSubs(); renderList(); }
+
+function renderTabs(){
+  const bs=['all',...new Set(H.map(h=>h.broker))];
+  document.getElementById('tabs').innerHTML=bs.map(b=>`<button class="tab ${curTab===b?'on':''}" onclick="setTab('${b}')">${b==='all'?'全部':b}</button>`).join('');
 }
-function fp(n) {
-  if (n == null) return '';
-  return (n >= 0 ? '+' : '') + n.toFixed(2) + '%';
-}
-function cc(n) { return n == null ? '' : n >= 0 ? 'green' : 'red'; }
+function setTab(t){ curTab=t; render(); }
 
-// Render
-function render() {
-  renderTabs();
-  renderSubs();
-  renderList();
-}
-
-function renderTabs() {
-  const brokers = ['all', ...new Set(H.map(h => h.broker))];
-  document.getElementById('tabs').innerHTML = brokers.map(b =>
-    `<button class="tab ${tab === b ? 'on' : ''}" onclick="setTab('${b}')">${b === 'all' ? '全部' : b}</button>`
-  ).join('');
-}
-
-function setTab(t) { tab = t; render(); }
-
-function renderSubs() {
-  const cs = H.map(calc);
-  let twN = 0, usN = 0, twD = 0, usD = 0, has = false;
-  cs.forEach(c => {
-    if (c.nv == null) return;
-    has = true;
-    if (c.market === 'TW') { twN += c.nv; twD += c.dayAmt || 0; }
-    else { usN += c.nv; usD += c.dayAmt || 0; }
-  });
-
-  const r = rate || 0;
-  const grand = twN + usN * r;
-  const grandD = twD + usD * r;
-
-  document.getElementById('totalAmt').textContent = has ? `NT$ ${f(grand)}` : '—';
-  document.getElementById('totalChg').innerHTML = has && grandD !== 0
-    ? `<span class="${cc(grandD)}">今日 ${grandD >= 0 ? '+' : ''}${f(grandD)} (${fp(grand ? grandD / grand * 100 : 0)})</span>`
-    : '';
-
-  document.getElementById('subs').innerHTML = [
-    `<div class="sub"><div class="sub-lbl">台股 TWD</div><div class="sub-val">${has ? f(twN) : '—'}</div></div>`,
-    `<div class="sub"><div class="sub-lbl">美股 USD</div><div class="sub-val">${has ? f(usN, 2) : '—'}</div></div>`,
-    rate ? `<div class="sub"><div class="sub-lbl">USD/TWD</div><div class="sub-val">${f(rate, 3)}</div></div>` : '',
+function renderSubs(){
+  const cs=H.map(calc);
+  let twN=0,usN=0,twD=0,usD=0,has=false;
+  cs.forEach(c=>{ if(c.nv==null)return; has=true; if(c.market==='TW'){twN+=c.nv;twD+=c.dayAmt||0;}else{usN+=c.nv;usD+=c.dayAmt||0;} });
+  const r=rate||0, grand=twN+usN*r, grandD=twD+usD*r;
+  document.getElementById('totalAmt').textContent=has?`NT$ ${f(grand)}`:'—';
+  document.getElementById('totalChg').innerHTML=has&&grandD!==0?`<span class="${cc(grandD)}">今日 ${grandD>=0?'+':''}${f(grandD)} (${fp(grand?grandD/grand*100:0)})</span>`:'';
+  document.getElementById('subs').innerHTML=[
+    `<div class="sub"><div class="sub-lbl">台股 TWD</div><div class="sub-val">${has?f(twN):'—'}</div></div>`,
+    `<div class="sub"><div class="sub-lbl">美股 USD</div><div class="sub-val">${has?f(usN,2):'—'}</div></div>`,
+    rate?`<div class="sub"><div class="sub-lbl">USD/TWD</div><div class="sub-val">${f(rate,3)}</div></div>`:'',
   ].join('');
 }
 
-function cardHtml(c) {
-  const cur = c.market === 'US' ? '$' : '';
-  const prStr = c.pd ? `${cur}${f(c.curr, 2)}` : '—';
-  const dayStr = c.pd ? `<span class="${cc(c.pd.chg)}">${c.pd.chg >= 0 ? '+' : ''}${f(c.pd.chg, 2)} (${fp(c.pd.chgPct)})</span>` : '';
-  const dec = c.shares % 1 !== 0 ? 5 : 0;
-  const ccy = c.market === 'US' ? 'US$' : '';
-  const pnlStr = c.pnl != null
-    ? `<span class="${cc(c.pnl)}">${c.pnl >= 0 ? '+' : ''}${f(c.pnl)}</span>`
-    : '—';
-  const pnlPctStr = c.pnlPct != null ? `<br><span class="${cc(c.pnlPct)}" style="font-size:11px">${fp(c.pnlPct)}</span>` : '';
-
-  const mbox = c.isMargin && c.mv != null ? `
-    <div class="margin-box">
-      <div class="mrow"><span>市值</span><span>${f(c.mv)}</span></div>
-      <div class="mrow"><span>融資借款</span><span class="red">－${f(c.marginLoan)}</span></div>
-      <div class="mrow tot"><span>自有淨值</span><span>${f(c.nv)}</span></div>
-    </div>` : '';
-
+function cardHtml(c){
+  const cur=c.market==='US'?'$':'';
+  const prStr=c.pd?`${cur}${f(c.curr,2)}`:'—';
+  const dayStr=c.pd?`<span class="${cc(c.pd.chg)}">${c.pd.chg>=0?'+':''}${f(c.pd.chg,2)} (${fp(c.pd.chgPct)})</span>`:'';
+  const dec=c.shares%1!==0?5:0, ccy=c.market==='US'?'US$':'';
+  const pnlS=c.pnl!=null?`<span class="${cc(c.pnl)}">${c.pnl>=0?'+':''}${f(c.pnl)}</span>`:'—';
+  const pctS=c.pnlPct!=null?`<br><span class="${cc(c.pnlPct)}" style="font-size:11px">${fp(c.pnlPct)}</span>`:'';
+  const mb=c.isMargin&&c.mv!=null?`<div class="mbox"><div class="mrow"><span>市值</span><span>${f(c.mv)}</span></div><div class="mrow"><span>融資借款</span><span class="red">－${f(c.marginLoan)}</span></div><div class="mrow tot"><span>自有淨值</span><span>${f(c.nv)}</span></div></div>`:'';
   return `<div class="card" onclick="openModal('${c.id}')">
-    <div class="card-hdr">
-      <div>
-        <div class="card-sym">${c.ticker}${c.isMargin ? '<span class="badge">融資</span>' : ''}</div>
-        <div class="card-name">${c.name}</div>
-      </div>
-      <div class="card-broker">${c.broker}</div>
-    </div>
-    <div class="price-row">
-      <div class="price">${prStr}</div>
-      <div class="day-chg">${dayStr}</div>
-    </div>
+    <div class="card-hdr"><div><div class="sym">${c.ticker}${c.isMargin?'<span class="badge">融資</span>':''}</div><div class="sname">${c.name}</div></div><div class="bkr">${c.broker}</div></div>
+    <div class="price-row"><div class="price">${prStr}</div><div class="dchg">${dayStr}</div></div>
     <div class="metrics">
-      <div><div class="m-lbl">持股數</div><div class="m-val">${f(c.shares, dec)}</div></div>
-      <div><div class="m-lbl">${c.isMargin ? '淨值' : '市值'}</div><div class="m-val sm">${c.nv != null ? ccy + f(c.nv) : '—'}</div></div>
-      <div><div class="m-lbl">損益</div><div class="m-val sm">${pnlStr}${pnlPctStr}</div></div>
-    </div>
-    ${mbox}
-  </div>`;
+      <div><div class="mlbl">持股數</div><div class="mval">${f(c.shares,dec)}</div></div>
+      <div><div class="mlbl">${c.isMargin?'淨值':'市值'}</div><div class="mval sm">${c.nv!=null?ccy+f(c.nv):'—'}</div></div>
+      <div><div class="mlbl">損益</div><div class="mval sm">${pnlS}${pctS}</div></div>
+    </div>${mb}</div>`;
 }
 
-function renderList() {
-  const el = document.getElementById('list');
-  if (!H.length) {
-    el.innerHTML = `<div class="empty"><div class="empty-ico">📊</div><div class="empty-txt">還沒有任何持股<br>點右下角 + 開始新增</div></div>`;
-    return;
-  }
-  const src = (tab === 'all' ? H : H.filter(h => h.broker === tab)).map(calc);
-  const tw = src.filter(c => c.market === 'TW');
-  const us = src.filter(c => c.market === 'US');
-  el.innerHTML =
-    (tw.length ? `<div class="sec-lbl">台股</div>${tw.map(cardHtml).join('')}` : '') +
-    (us.length ? `<div class="sec-lbl">美股</div>${us.map(cardHtml).join('')}` : '');
+function renderList(){
+  const el=document.getElementById('list');
+  if(!H.length){ el.innerHTML='<div class="empty"><div class="empty-ico">📊</div><div>還沒有持股，點右下角 + 新增</div></div>'; return; }
+  const src=(curTab==='all'?H:H.filter(h=>h.broker===curTab)).map(calc);
+  const tw=src.filter(c=>c.market==='TW'), us=src.filter(c=>c.market==='US');
+  el.innerHTML=(tw.length?`<div class="sec-lbl">台股</div>${tw.map(cardHtml).join('')}`:'')+(us.length?`<div class="sec-lbl">美股</div>${us.map(cardHtml).join('')}`:'');
 }
 
-// Modal
-function openModal(id = null) {
-  editId = id;
-  document.getElementById('modalTit').textContent = id ? '編輯持股' : '新增持股';
-  document.getElementById('delBtn').classList.toggle('hidden', !id);
-  if (id) {
-    const h = H.find(x => x.id === id);
-    if (!h) return;
+/* Holdings modal */
+function openModal(id=null){
+  editId=id;
+  document.getElementById('hTit').textContent=id?'編輯持股':'新增持股';
+  document.getElementById('delBtn').classList.toggle('hidden',!id);
+  if(id){
+    const h=H.find(x=>x.id===id); if(!h)return;
     setMkt(h.market);
-    document.getElementById('fBroker').value = h.broker;
-    document.getElementById('fTicker').value = h.ticker;
-    document.getElementById('fName').value = h.name;
-    document.getElementById('fShares').value = h.shares;
-    document.getElementById('fCost').value = h.avgCost;
-    fMargin = h.isMargin;
-    document.getElementById('fLoan').value = h.isMargin ? h.marginLoan : '';
+    document.getElementById('fBk').value=h.broker;
+    document.getElementById('fTk').value=h.ticker;
+    document.getElementById('fNm').value=h.name;
+    document.getElementById('fSh').value=h.shares;
+    document.getElementById('fCo').value=h.avgCost;
+    fMargin=h.isMargin; document.getElementById('fLo').value=h.isMargin?h.marginLoan:'';
   } else {
-    setMkt('TW');
-    ['fBroker','fTicker','fName','fShares','fCost','fLoan'].forEach(i => document.getElementById(i).value = '');
-    fMargin = false;
+    setMkt('TW'); ['fBk','fTk','fNm','fSh','fCo','fLo'].forEach(i=>document.getElementById(i).value=''); fMargin=false;
   }
-  updMarginUI();
-  document.getElementById('overlay').classList.add('open');
+  updMUI(); document.getElementById('hOv').classList.add('open');
 }
+function closeModal(){ document.getElementById('hOv').classList.remove('open'); editId=null; }
+function setMkt(m){ fMkt=m; document.getElementById('btnTW').classList.toggle('on',m==='TW'); document.getElementById('btnUS').classList.toggle('on',m==='US'); }
+function togM(){ fMargin=!fMargin; updMUI(); }
+function updMUI(){ document.getElementById('mSw').classList.toggle('on',fMargin); document.getElementById('lGrp').classList.toggle('hidden',!fMargin); }
 
-function closeModal() { document.getElementById('overlay').classList.remove('open'); editId = null; }
-function closeIfBg(e) { if (e.target === e.currentTarget) closeModal(); }
-
-function setMkt(m) {
-  fMkt = m;
-  document.getElementById('btnTW').classList.toggle('on', m === 'TW');
-  document.getElementById('btnUS').classList.toggle('on', m === 'US');
-}
-
-function togMargin() { fMargin = !fMargin; updMarginUI(); }
-function updMarginUI() {
-  document.getElementById('mSw').classList.toggle('on', fMargin);
-  document.getElementById('loanGrp').classList.toggle('hidden', !fMargin);
-}
-
-function saveHolding() {
-  const broker = document.getElementById('fBroker').value.trim();
-  const ticker = document.getElementById('fTicker').value.trim().toUpperCase();
-  const name   = document.getElementById('fName').value.trim();
-  const shares = parseFloat(document.getElementById('fShares').value);
-  const avgCost= parseFloat(document.getElementById('fCost').value);
-  const marginLoan = fMargin ? (parseFloat(document.getElementById('fLoan').value) || 0) : 0;
-
-  if (!broker || !ticker || !name || isNaN(shares) || shares <= 0 || isNaN(avgCost) || avgCost <= 0) {
-    alert('請填寫所有必填欄位'); return;
-  }
-
-  const entry = { broker, ticker, name, market: fMkt, shares, avgCost, isMargin: fMargin, marginLoan };
-  if (editId) {
-    const i = H.findIndex(h => h.id === editId);
-    if (i !== -1) H[i] = { ...H[i], ...entry };
-  } else {
-    H.push({ id: Date.now() + '-' + Math.random().toString(36).substr(2,5), ...entry });
-  }
+function saveH(){
+  const bk=document.getElementById('fBk').value.trim(), tk=document.getElementById('fTk').value.trim().toUpperCase();
+  const nm=document.getElementById('fNm').value.trim(), sh=parseFloat(document.getElementById('fSh').value);
+  const co=parseFloat(document.getElementById('fCo').value), lo=fMargin?(parseFloat(document.getElementById('fLo').value)||0):0;
+  if(!bk||!tk||!nm||isNaN(sh)||sh<=0||isNaN(co)||co<=0){ alert('請填寫所有必填欄位'); return; }
+  const e={broker:bk,ticker:tk,name:nm,market:fMkt,shares:sh,avgCost:co,isMargin:fMargin,marginLoan:lo};
+  if(editId){ const i=H.findIndex(h=>h.id===editId); if(i!==-1) H[i]={...H[i],...e}; }
+  else H.push({id:Date.now()+'-'+Math.random().toString(36).substr(2,5),...e});
   persist(); closeModal(); render(); fetchPrices();
 }
+function delH(){
+  if(!editId||!confirm('確定要刪除？'))return;
+  H=H.filter(h=>h.id!==editId); persist(); closeModal(); render();
+}
 
-function delHolding() {
-  if (!editId || !confirm('確定要刪除這筆持股？')) return;
-  H = H.filter(h => h.id !== editId);
-  persist(); closeModal(); render();
+/* Settings */
+function openSettings(){ document.getElementById('sOv').classList.add('open'); }
+function closeSettings(){ document.getElementById('sOv').classList.remove('open'); }
+function closeIfBg(e,id){ if(e.target===e.currentTarget) document.getElementById(id).classList.remove('open'); }
+
+function doImport(){
+  try{
+    const raw=document.getElementById('impJson').value.trim();
+    const data=JSON.parse(raw);
+    if(!Array.isArray(data)) throw new Error('格式錯誤，需為陣列');
+    H=data; persist(); closeSettings(); render(); fetchPrices();
+    alert(`✓ 匯入成功，共 ${data.length} 筆持股`);
+  }catch(e){ alert('匯入失敗：'+e.message); }
+}
+function doExport(){
+  document.getElementById('expJson').value=JSON.stringify(H,null,2);
+  document.getElementById('expJson').select();
 }
 
 load(); render();
-if (H.length) fetchPrices();
+if(H.length) fetchPrices();
 </script>
 </body>
 </html>
