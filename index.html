@@ -328,7 +328,7 @@ textarea.fi{resize:vertical;min-height:90px;font-size:13px;font-family:monospace
 
 <script>
 /* ══════════ STATE ══════════ */
-const SK='portfolio_v4', CK='pnl_log_v2', HK='hist_loaded';
+const SK='portfolio_v4', CK='pnl_log_v2', HK='hist_v3'; // bump to force recalc
 const PROX=[
   u=>u,
   u=>'https://corsproxy.io/?url='+encodeURIComponent(u),
@@ -389,7 +389,10 @@ async function fetchHist(sym){
   return null;
 }
 
-/* load 30d history into pnl_log */
+/* load 30d history into pnl_log
+   FIX: each ticker uses its OWN previous trading day — avoids cross-exchange
+   date mismatch (e.g. TW holiday ≠ US holiday causing wrong baseline).
+*/
 async function loadHistory(){
   document.getElementById('calLoading').style.display='block';
   const syms=[...new Set(H.map(yt)),'USDTWD=X'];
@@ -399,31 +402,44 @@ async function loadHistory(){
     if(d)histAll[s]=d;
   }));
 
-  const rateArr=histAll['USDTWD=X']||[];
-  const log=getLog();
-
-  // collect all dates
-  const dateSet=new Set();
-  Object.values(histAll).forEach(arr=>arr.forEach(d=>dateSet.add(d.date)));
-  const dates=[...dateSet].sort();
-
-  for(let i=1;i<dates.length;i++){
-    const today=dates[i],yesterday=dates[i-1];
-    if(log[today])continue; // don't overwrite real data
-    const rDay=rateArr.find(d=>d.date===today)?.close||(rate||0);
-    let twdP=0,usdP=0;
-    H.forEach(h=>{
-      const hd=histAll[yt(h)];if(!hd)return;
-      const c=hd.find(d=>d.date===today)?.close;
-      const p=hd.find(d=>d.date===yesterday)?.close;
-      if(c==null||p==null)return;
-      const dp=(c-p)*h.shares;
-      h.market==='TW'?twdP+=dp:usdP+=dp;
-    });
-    const total=Math.round(twdP+(rDay?usdP*rDay:0));
-    if(Math.abs(total)>1)log[today]={pnl:total,ts:Date.now(),src:'hist'};
-  }
   histData=histAll; // save globally for day-detail clicks
+  const rateArr=histAll['USDTWD=X']||[];
+
+  // Step 1: clear old bad hist entries (buggy version used wrong date logic)
+  const log=getLog();
+  Object.keys(log).forEach(k=>{if(log[k]?.src==='hist')delete log[k];});
+
+  // Step 2: accumulate per-date P&L independently per ticker
+  // Each ticker iterates its OWN date array, so "previous" is always
+  // that ticker's last actual trading day — no cross-exchange confusion.
+  const accum={}; // { 'YYYY-MM-DD': { twdPnl, usdPnl } }
+
+  [...new Set(H.map(yt))].forEach(sym=>{
+    const hd=histAll[sym];
+    if(!hd||hd.length<2)return;
+    const holdings=H.filter(h=>yt(h)===sym);
+    for(let i=1;i<hd.length;i++){
+      const date=hd[i].date;
+      const curr=hd[i].close, prev=hd[i-1].close;
+      if(curr==null||prev==null)continue;
+      const chg=curr-prev;
+      if(!accum[date])accum[date]={twdPnl:0,usdPnl:0};
+      holdings.forEach(h=>{
+        const dp=chg*h.shares;
+        h.market==='TW'?accum[date].twdPnl+=dp:accum[date].usdPnl+=dp;
+      });
+    }
+  });
+
+  // Step 3: write to log (don't overwrite user's real-day entries)
+  Object.entries(accum).forEach(([date,{twdPnl,usdPnl}])=>{
+    if(log[date]&&!log[date].src)return; // preserve real (non-hist) entries
+    const rDay=rateArr.find(d=>d.date===date)?.close||(rate||0);
+    const total=Math.round(twdPnl+(rDay?usdPnl*rDay:0));
+    if(Math.abs(total)>1)log[date]={pnl:total,ts:Date.now(),src:'hist'};
+    else delete log[date]; // remove near-zero noise
+  });
+
   saveLog(log);
   localStorage.setItem(HK,'1');
   document.getElementById('calLoading').style.display='none';
