@@ -611,8 +611,8 @@ function calNav(d){calM+=d;if(calM<0){calM=11;calY--;}else if(calM>11){calM=0;ca
 let histLoaded=false;
 function setView(v){
   curView=v;
-  document.getElementById('portView').style.display=v==='port'?'':'none';
-  document.getElementById('calView').style.display=v==='cal'?'':'none';
+  document.getElementById('portView').style.display=v==='port'?'block':'none';
+  document.getElementById('calView').style.display=v==='cal'?'block':'none';
   document.getElementById('fab').style.display=v==='port'?'':'none';
   document.getElementById('bn0').classList.toggle('on',v==='port');
   document.getElementById('bn1').classList.toggle('on',v==='cal');
